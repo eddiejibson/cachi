@@ -44,7 +44,7 @@ app.get("/", cachi.check("base"), async (req, res) => {
   //Expiry in 1 hour (3600 seconds)
   await cachi.set("base", result, 3600); //Save the result to be cached
   //Return the result
-  return res.status(status).json(result);
+  return res.status(200).json(result);
 });
 
 //With status codes:
@@ -52,10 +52,8 @@ app.get("/", cachi.check("base"), async (req, res) => {
 app.get("/status", cachi.check("status"), async (req, res) => {
   //The result that to be cached
   let result = { weird: Date.now() * 9999 };
-  //Status code to be cached as well (optional obviously)
-  let status = 201;
-  await cachi.set("status", result, 3600, status); //Save the result to be cached
-  return res.status(status).json(result); //Return the result
+  await cachi.set("status", result, 3600); //Save the result to be cached
+  return res.status(200).json(result); //Return the result
 });
 
 //This example will only return the cached result if certain
@@ -66,11 +64,10 @@ app.get(
   cachi.check("id", { req: { params: ["id"] } }),
   async (req, res) => {
     let result = { id: req.params.id, weird: Date.now() * 9999 };
-    let status = 201; //Random status code to be returned
-    await cachi.set("id", result, 3600, status, {
+    await cachi.set("id", result, 3600, {
       req: { params: req.params.id },
     });
-    return res.status(status).json(result);
+    return res.status(200).json(result);
   }
 );
 
