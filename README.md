@@ -65,7 +65,7 @@ app.get(
   async (req, res) => {
     let result = { id: req.params.id, weird: Date.now() * 9999 };
     await cachi.set("id", result, 3600, {
-      req: { params: req.params.id },
+      req: { params: { id: req.params.id } },
     });
     return res.status(200).json(result);
   }
