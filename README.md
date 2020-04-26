@@ -167,8 +167,8 @@ cachi.on("error", (err) => {
 You can be notified when the Redis keystore has been connected to adding a listener for these events:
 
 ```javascript
-cachi.on("connect", () => {
-  console.log("Cachi has connected to Redis");
+cachi.on("connected", () => {
+  console.log("Cachi has connected to Redis successfully");
 });
 ```
 

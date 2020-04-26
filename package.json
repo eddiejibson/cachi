@@ -1,6 +1,6 @@
 {
   "name": "cachi",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Simple and light NodeJS caching tool for Express",
   "main": "lib/Cachi.js",
   "scripts": {
