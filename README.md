@@ -6,11 +6,11 @@ If this is of use to you, please consider starring 🌟 on [GitHub](https://gith
 
 ### Redis Failure
 
-Worried about utilzing a database for effectively every request and may return errors? Not to worry, whilst Cachi will still emit events for the server to handle, no errors will be returned to the client and instead the next middleware will be invoked - meaning the only bad side effect will be no cached results - only fresh ones you'll have to compute.
+Worried about utilzing a database for effectively every request and may return errors? Not to worry, whilst Cachi will still [emit events](#events) for the server to handle, no errors will be returned to the client and instead the next middleware will be invoked - meaning the only bad side effect will be no cached results - only fresh ones you'll have to compute.
 
 ### Why would I ever cache anything?
 
-Well, often some requests have quite intensive processes (e.g database lookups or certain other heavy operations) to end up with a result. With caching such a request, the end result will typically be returned to the client with a significant performance increase as only one very quick operation (to the Redis key) must be executed.
+Well, often some requests have quite intensive processes (e.g database lookups or certain other heavy operations) to end up with a result. With caching such a request, the end result will typically be returned to the client with a significant performance increase (often reducing server load significantly, too) as only one very quick operation (to the Redis key) must be executed.
 
 ## Installation
 
@@ -141,6 +141,36 @@ This is effectively the same as `.get()` except you must call it as an Express m
 `name`: _String_ What result should Cachi try and find to be returned? (typically endpoint name). If not set, the name will be computed by adding the request's `baseUrl` and `path` strings together.
 
 `criteria`: What requirements must be met for a specific result to be returned (e.g the request body must have a certain value). **IMPORTANT:** If intended use of such is with express values from the request, see the [criteria info](#criteria).
+
+## Events
+
+As mentioned before, Cachi will not break your whole application if the Redis keystore cannot be reached (or other issues). Instead, it will emit events for you to handle.
+
+There's only two events:
+
+- `error`: Upon an error being encountered, such will be emitted along with the error.
+
+- `connected`: Upon connecting to the Redis database, such will be emitted. **Note:** If you've passed an existing `ioredis` instance here and has already been connected, it may be unlikely for this event to be emitted for obvious reasons.
+
+### error
+
+You can catch these errors by adding a listener for these events:
+
+```javascript
+cachi.on("error", (err) => {
+  console.error("Oh no! An error occured", err);
+});
+```
+
+### connected
+
+You can be notified when the Redis keystore has been connected to adding a listener for these events:
+
+```javascript
+cachi.on("connect", () => {
+  console.log("Cachi has connected to Redis");
+});
+```
 
 ## Express "criteria" solution
 
